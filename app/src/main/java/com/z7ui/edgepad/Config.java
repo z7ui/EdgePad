@@ -95,6 +95,38 @@ public class Config {
                 .apply();
     }
 
+    /** 单独设离边缘，贴边模式开启时直接写 0。 */
+    public static void setInset(Context c, int insetDp) {
+        p(c).edit().putInt("inset_dp", clamp(insetDp, 0, 120)).apply();
+    }
+
+    // ---------------- 贴边模式（需 root） ----------------
+
+    public static boolean edgeModeOn(Context c) {
+        return p(c).getBoolean("edge_mode_on", false);
+    }
+
+    public static void setEdgeModeOn(Context c, boolean on) {
+        p(c).edit().putBoolean("edge_mode_on", on).apply();
+    }
+
+    /** 开启贴边前记住用户原来的导航模式，关闭时还原。默认 2（全面屏手势）。 */
+    public static int savedNavMode(Context c) {
+        return p(c).getInt("saved_nav_mode", 2);
+    }
+
+    public static void setSavedNavMode(Context c, int mode) {
+        p(c).edit().putInt("saved_nav_mode", mode).apply();
+    }
+
+    public static int savedInset(Context c) {
+        return p(c).getInt("saved_inset", 40);
+    }
+
+    public static void setSavedInset(Context c, int inset) {
+        p(c).edit().putInt("saved_inset", inset).apply();
+    }
+
     // ---------------- 例外清单 ----------------
 
     public static Set<String> exceptions(Context c) {

@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout root;
     private TextView overlayStatus, a11yStatus;
+    private SwitchCompat edgeModeSwitch;
+    private TextView edgeModeSub;
+    private Boolean rootAvailable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         refresh();
+        // 每次回来都重新检测 root，避免用户授权后开关还是灰的
+        new Thread(() -> {
+            final boolean ok = Root.available(this);
+            runOnUiThread(() -> {
+                rootAvailable = ok;
+                updateEdgeModeRow();
+            });
+        }).start();
     }
 
     private void buildUi() {
@@ -78,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         root.addView(sectionTitle("手柄"));
         root.addView(sideSwitch(Config.LEFT, "左手柄", "从左侧往右滑"));
         root.addView(sideSwitch(Config.RIGHT, "右手柄", "从右侧往左滑"));
+        root.addView(edgeModeRow());
 
         root.addView(sectionTitle("设置"));
         root.addView(row("左侧手势", "6 个方向 × 长短，各自绑定动作",
@@ -166,6 +179,73 @@ public class MainActivity extends AppCompatActivity {
         line.addView(sw);
         box.addView(line);
         return box;
+    }
+
+    private View edgeModeRow() {
+        LinearLayout box = card();
+        LinearLayout line = new LinearLayout(this);
+        line.setOrientation(LinearLayout.HORIZONTAL);
+        line.setGravity(Gravity.CENTER_VERTICAL);
+
+        LinearLayout texts = new LinearLayout(this);
+        texts.setOrientation(LinearLayout.VERTICAL);
+        TextView t = new TextView(this);
+        t.setText("贴边模式（需 root）");
+        t.setTextSize(16);
+        t.setTextColor(color(android.R.color.black));
+        texts.addView(t);
+        edgeModeSub = new TextView(this);
+        edgeModeSub.setText("正在检测 root…");
+        edgeModeSub.setTextSize(12);
+        edgeModeSub.setTextColor(color(R.color.muted));
+        texts.addView(edgeModeSub);
+        line.addView(texts, new LinearLayout.LayoutParams(0,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        edgeModeSwitch = new SwitchCompat(this);
+        edgeModeSwitch.setEnabled(false);
+        line.addView(edgeModeSwitch);
+        box.addView(line);
+        return box;
+    }
+
+    private void updateEdgeModeRow() {
+        if (edgeModeSwitch == null || edgeModeSub == null) return;
+        if (rootAvailable == null) {
+            edgeModeSub.setText("正在检测 root…");
+            edgeModeSwitch.setEnabled(false);
+        } else if (!rootAvailable) {
+            edgeModeSub.setText("未检测到 root，或没在管理器里授权");
+            edgeModeSwitch.setEnabled(false);
+        } else {
+            edgeModeSwitch.setEnabled(true);
+            edgeModeSwitch.setOnCheckedChangeListener(null);
+            edgeModeSwitch.setChecked(Config.edgeModeOn(this));
+            edgeModeSwitch.setOnCheckedChangeListener((b, checked) -> onEdgeMode(checked));
+            edgeModeSub.setText("关掉系统返回手势，手柄贴边；关闭时还原");
+        }
+    }
+
+    private void onEdgeMode(boolean on) {
+        if (on) {
+            if (EdgeMode.enable(this)) {
+                Toast.makeText(this, "已切三键导航，手柄贴边", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "root 没生效，请在管理器里给边触授权", Toast.LENGTH_LONG).show();
+                edgeModeSwitch.setOnCheckedChangeListener(null);
+                edgeModeSwitch.setChecked(false);
+                edgeModeSwitch.setOnCheckedChangeListener((b, checked) -> onEdgeMode(checked));
+            }
+        } else {
+            if (EdgeMode.disable(this)) {
+                Toast.makeText(this, "已还原导航模式和手柄位置", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "还原失败，root 没生效", Toast.LENGTH_LONG).show();
+                edgeModeSwitch.setOnCheckedChangeListener(null);
+                edgeModeSwitch.setChecked(true);
+                edgeModeSwitch.setOnCheckedChangeListener((b, checked) -> onEdgeMode(checked));
+            }
+        }
     }
 
     private View row(String title, String sub, View.OnClickListener click) {

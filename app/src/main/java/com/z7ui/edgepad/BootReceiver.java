@@ -17,6 +17,7 @@ public class BootReceiver extends BroadcastReceiver {
             return;
         }
         boolean any = Config.sideOn(context, Config.LEFT) || Config.sideOn(context, Config.RIGHT);
+        EdgeMode.ensure(context);
         if (Settings.canDrawOverlays(context) && any) {
             EdgeService.refresh(context);
         }
