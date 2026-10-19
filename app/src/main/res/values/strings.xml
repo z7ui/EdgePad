@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">边触</string>
+    <string name="a11y_desc">边触用这项权限执行「返回、主屏、最近任务、通知栏、截屏、锁屏」这类动作，并记住当前是哪个应用（只读包名，用来判断例外清单）。它不读取界面内容。</string>
+    <string name="channel_name">侧边手柄</string>
+    <string name="channel_desc">保持侧边手势可用</string>
+</resources>
