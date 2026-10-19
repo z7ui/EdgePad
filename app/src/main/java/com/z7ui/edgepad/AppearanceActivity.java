@@ -51,7 +51,7 @@ public class AppearanceActivity extends AppCompatActivity {
                 v -> width = v));
         root.addView(slider("高度", "占屏幕高度的比例", 20, 90, height, "%",
                 v -> height = v));
-        root.addView(slider("离边缘", "往屏幕里缩多少，避开系统返回手势", 0, 40, inset, "dp",
+        root.addView(slider("离边缘", "往屏幕里缩多少；默认 40dp 避开系统返回手势", 0, 120, inset, "dp",
                 v -> inset = v));
         root.addView(slider("透明度", "数值越大越显眼", 10, 100, alpha, "%",
                 v -> alpha = v));
@@ -59,8 +59,9 @@ public class AppearanceActivity extends AppCompatActivity {
                 v -> offset = v));
 
         TextView tip = new TextView(this);
-        tip.setText("建议：全面屏手势下，离边缘至少留 6dp。手柄贴着边缘时，"
-                + "它覆盖的那一段会吃掉系统返回手势。");
+        tip.setText("全面屏手势下，屏幕边缘约 20~30dp 是系统返回的地盘，第三方盖不掉。"
+                + "手柄贴边会被系统抢走，所以默认离边缘 40dp。"
+                + "改成三键导航后可以把离边缘调到 0，贴边使用。");
         tip.setTextSize(12);
         tip.setTextColor(ContextCompat.getColor(this, R.color.muted));
         tip.setPadding(0, dp(16), 0, 0);

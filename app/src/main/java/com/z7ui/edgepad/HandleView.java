@@ -113,6 +113,7 @@ public class HandleView extends View {
     }
 
     private void fire(String gesture) {
+        android.util.Log.d("EdgePad", side + " fire " + gesture);
         vibrate();
         String action = Config.action(getContext(), side, gesture);
         Actions.run(getContext(), action);

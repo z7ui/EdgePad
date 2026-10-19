@@ -91,10 +91,11 @@ public class MainActivity extends AppCompatActivity {
         root.addView(row("关于", "版本与实现说明", v -> about()));
 
         TextView note = new TextView(this);
-        note.setText("提示：全面屏手势下，屏幕左右边缘本身是「返回」。"
-                + "手柄放在边缘会把那一小段返回吃掉，可以在「手柄外观」里把它往屏幕里挪一点。\n\n"
-                + "手柄宽度默认 16dp、高度 46%、离边缘 8dp，滑动手势从手柄上开始算。"
-                + "短滑与长滑的分界是屏高的 16%。");
+        note.setText("提示：全面屏手势下，屏幕左右边缘那一条是系统「返回」，第三方应用盖不掉。"
+                + "所以手柄默认离边缘 40dp，待在系统手势区之外。\n\n"
+                + "默认手柄宽 16dp、高 46%、离边缘 40dp、透明度 42%。"
+                + "短滑与长滑的分界是屏高的 16%。"
+                + "如果你改用三键导航，可以把手柄在「手柄外观」里调到贴边。");
         note.setTextSize(12);
         note.setTextColor(color(R.color.muted));
         note.setPadding(0, dp(24), 0, 0);

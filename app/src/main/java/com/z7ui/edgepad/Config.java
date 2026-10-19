@@ -71,7 +71,9 @@ public class Config {
     }
 
     public static int insetDp(Context c) {
-        return clamp(p(c).getInt("inset_dp", 8), 0, 40);
+        // 默认 40dp：全面屏手势下，屏幕边缘那一条是系统返回，贴边会被吃掉，
+        // 实测 40dp 能稳定收到真实滑动。用户可以在外观里调到贴边（三键导航时可用）。
+        return clamp(p(c).getInt("inset_dp", 40), 0, 120);
     }
 
     public static int alphaPct(Context c) {
@@ -87,7 +89,7 @@ public class Config {
         p(c).edit()
                 .putInt("width_dp", clamp(widthDp, 8, 32))
                 .putInt("height_pct", clamp(heightPct, 20, 90))
-                .putInt("inset_dp", clamp(insetDp, 0, 40))
+                .putInt("inset_dp", clamp(insetDp, 0, 120))
                 .putInt("alpha", clamp(alphaPct, 10, 100))
                 .putInt("offset_pct", clamp(offsetPct, -40, 40))
                 .apply();
