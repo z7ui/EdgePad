@@ -101,7 +101,10 @@ public class MainActivity extends AppCompatActivity {
                 v -> open(AppearanceActivity.class, null)));
         root.addView(row("应用例外", "在这些应用里不显示手柄、不识别手势",
                 v -> open(ExceptionsActivity.class, null)));
-        root.addView(row("关于", "版本与实现说明", v -> about()));
+        root.addView(row("备份与恢复", "导出配置到文件，换机或重装后导入",
+                v -> showBackupMenu()));
+        root.addView(row("关于", "版本、检查更新与链接",
+                v -> startActivity(new Intent(this, AboutActivity.class))));
 
         TextView note = new TextView(this);
         note.setText("提示：全面屏手势下，屏幕左右边缘那一条是系统「返回」，第三方应用盖不掉。"
@@ -349,6 +352,49 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, cls);
         if (side != null) i.putExtra("side", side);
         startActivity(i);
+    }
+
+    private void showBackupMenu() {
+        new AlertDialog.Builder(this)
+                .setTitle("备份与恢复")
+                .setItems(new String[]{"导出配置到文件", "从文件导入配置"}, (d, which) -> {
+                    if (which == 0) {
+                        Backup.startExport(this);
+                    } else {
+                        new AlertDialog.Builder(this)
+                                .setTitle("导入会覆盖当前配置")
+                                .setMessage("现有的手势、外观和例外清单会被文件里的内容替换。建议先导出一份。")
+                                .setPositiveButton("继续导入", (dd, ww) -> Backup.startImport(this))
+                                .setNegativeButton("取消", null)
+                                .show();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK || data == null || data.getData() == null) {
+            return;
+        }
+        Uri uri = data.getData();
+        if (requestCode == Backup.REQ_EXPORT) {
+            try {
+                Backup.writeUri(this, uri, Backup.dump(this));
+                Toast.makeText(this, "已导出", Toast.LENGTH_SHORT).show();
+            } catch (Throwable t) {
+                Toast.makeText(this, "导出失败：" + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else if (requestCode == Backup.REQ_IMPORT) {
+            try {
+                int n = Backup.restore(this, Backup.readUri(this, uri));
+                Toast.makeText(this, "已导入 " + n + " 项配置", Toast.LENGTH_LONG).show();
+                recreate();
+            } catch (Throwable t) {
+                Toast.makeText(this, "导入失败：" + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private void about() {

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 自适应图标的前景层：只留手柄和线条，缩到安全区内 -->
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.76"
+        android:scaleY="0.76">
+        <path
+            android:fillColor="#2E6BE6"
+            android:pathData="M18,26h10c4,0 7,3 7,7v42c0,4 -3,7 -7,7h-10c-4,0 -7,-3 -7,-7v-42c0,-4 3,-7 7,-7z" />
+        <path
+            android:fillColor="#8FB4FF"
+            android:pathData="M80,26h10c4,0 7,3 7,7v42c0,4 -3,7 -7,7h-10c-4,0 -7,-3 -7,-7v-42c0,-4 3,-7 7,-7z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M33,50h40v3h-40z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M33,58h28v3h-28z" />
+    </group>
+</vector>

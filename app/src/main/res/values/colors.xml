@@ -4,4 +4,8 @@
     <color name="ok">#22A06B</color>
     <color name="warn">#D9822B</color>
     <color name="muted">#8C8C8C</color>
+    <!-- 自适应图标背景 -->
+    <color name="ic_launcher_bg">#1B3B6F</color>
+    <!-- 关于页里崩溃条目的图标色，与 warn 同色 -->
+    <color name="perm_missing">#D9822B</color>
 </resources>

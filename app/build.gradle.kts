@@ -22,8 +22,8 @@ android {
         applicationId = "com.z7ui.edgepad"
         minSdk = 27
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.2"
+        versionCode = 3
+        versionName = "0.3"
     }
 
     signingConfigs {
